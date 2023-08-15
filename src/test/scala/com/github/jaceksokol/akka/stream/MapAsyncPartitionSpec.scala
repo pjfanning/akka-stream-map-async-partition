@@ -52,7 +52,15 @@ class MapAsyncPartitionSpec
         .futureValue
         .map(_._2)
 
+    val resultAkka =
+      Source(elements)
+        .mapAsyncPartitioned(parallelism = 2, perPartition = 1)(extractPartition)(blockingOperation2)
+        .runWith(Sink.seq)
+        .futureValue
+        .map(_._2)
+
     result shouldBe Vector("2.a", "1.a", "1.b", "2.b", "1.c")
+    resultAkka shouldEqual result
   }
 
   it should "process elements in parallel preserving order in partition" in {

@@ -56,4 +56,12 @@ object TestData {
       }
     }
 
+  def blockingOperation2(e: TestKeyValue, i: Int)(implicit ec: ExecutionContext): Future[(Int, String)] =
+    Future {
+      blocking {
+        Thread.sleep(e.delay.toMillis)
+        i -> e.value
+      }
+    }
+
 }
